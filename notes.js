@@ -11,13 +11,31 @@ const addNote = (title, body) => {
       const dataJSON = dataBuffer.toString();
       return JSON.parse(dataJSON);
     } catch (e) {
-
-    return [];
+      return [];
     }
   };
   const notes = loadNotes();
-  console.log(notes);
+  const duplicateNotes = notes.filter((element) => {
+    return element.title == title;
+  });
 
+  if (duplicateNotes.length === 0) {
+    notes.push({
+      title: title,
+      body: body,
+    });
+
+    saveNotes(notes);
+
+    console.log("new note found");
+  } else {
+    console.log("note title taken");
+  }
+};
+
+const saveNotes = (notes) => {
+  const dataJSON = JSON.stringify(notes);
+  fs.writeFileSync("notes.json", dataJSON);
 };
 
 module.exports = {
